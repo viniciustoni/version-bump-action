@@ -28,6 +28,19 @@ function bump {
       local bv=$((parts[2] + 1))
       NEW_VERSION="${parts[0]}.${parts[1]}.${bv}"
       ;;
+    auto)
+      if [ "${AUTO_HIGHER}" == "true" ] && [[ "${parts[2]}" == *"${AUTO_SPLITTER}${AUTO_SUFFIX}"* ]]; then
+        local higher=( ${parts[2]//${AUTO_SPLITTER}${AUTO_SUFFIX}/ } )
+        local bv=$((higher[1] + 1))
+        NEW_VERSION="${parts[0]}.${parts[1]}.$((parts[2] + 0))${AUTO_SPLITTER}${AUTO_SUFFIX}${bv}"
+      elif [ "${AUTO_HIGHER}" == "false" ] && [[ "${parts[2]}" == *"${AUTO_SPLITTER}${AUTO_SUFFIX}"* ]]; then
+        local higher=( ${parts[2]//${AUTO_SPLITTER}${AUTO_SUFFIX}/ } )
+        local bv=$((higher[1] + 0))
+        NEW_VERSION="${parts[0]}.${parts[1]}.$((parts[2] + 0))${AUTO_SPLITTER}${AUTO_SUFFIX}${bv}"
+      else
+        NEW_VERSION="${parts[0]}.${parts[1]}.$((parts[2] + 0))${AUTO_SPLITTER}${AUTO_SUFFIX}"
+      fi
+      ;;
     esac
 }
 
@@ -43,6 +56,8 @@ elif git log -1 | grep -q "#minor"; then
   BUMP_MODE="minor"
 elif git log -1 | grep -q "#patch"; then
   BUMP_MODE="patch"
+elif [[ "${AUTO}" == "true" ]]; then
+  BUMP_MODE="auto"	
 fi
 
 if [[ "${BUMP_MODE}" == "none" ]]
@@ -57,7 +72,12 @@ else
   git add $POMPATH/pom.xml
   REPO="https://$GITHUB_ACTOR:$TOKEN@github.com/$GITHUB_REPOSITORY.git"
   git commit -m "Bump pom.xml from $OLD_VERSION to $NEW_VERSION"
-  git tag $NEW_VERSION
-  git push $REPO --follow-tags
-  git push $REPO --tags
+  if [[ "${BUMP_MODE}" == "auto" ]] && [[ "${AUTO_RELEASE}" == "false" ]]; then
+	echo "Doing no new tag for this bump because its disabled for auto mode"
+  else
+    git tag $NEW_VERSION
+    git push $REPO --follow-tags
+    git push $REPO --tags
+	echo "Created a new tag for this bump"
+  fi
 fi

@@ -2,7 +2,7 @@
 name: Maven Version Bump Action
 description: A simple GitHub Actions to bump the version of Maven projects
 
-author: Nick Nichols
+author: Plugily Projects and Nick Nichols
 
 branding:
   color: purple
@@ -24,30 +24,78 @@ inputs:
     description: 'The name to use for the version bump commit. e.g. github.actor'
     required: true
     default: github-actions[bot]
+  commit-skip:
+    description: 'Skip this whole action when some phrase is on the commit'
+    required: true
+    default: '[SKIP BUMP]'
+  auto-version-bump:
+    description: 'Should we bump the version on every commit?'
+    required: true
+    default: true
+  auto-version-bump-splitter:
+    description: 'Version splitter for auto bump'
+    required: true
+    default: '-'
+  auto-version-bump-suffix:
+    description: 'Version suffix for auto bump'
+    required: true
+    default: 'dev'
+  auto-version-bump-higher:
+    description: 'Should after the suffix a number bumped?'
+    required: true
+    default: true
+  auto-version-bump-release:
+    description: 'Should on a automatic bump a tag and release created?'
+    required: true
+    default: false
 
 outputs:
   version:
     description: 'The current version (whether updated or not)'
     value: ${{ steps.get-outputs.outputs.version }}
+  before-version:
+    description: 'The version before running this github action'
+    value: ${{ steps.get-before-version.outputs.before-version }}
+  bumped:
+    description: 'If version got bumped (true/false)'
+    value: ${{ steps.get-outputs.outputs.bumped }}
 
 runs:
   using: "composite"
+  if: "!contains(github.event.head_commit.message, ${{ inputs.commit-skip }})"
   steps:
+    - name: Output before version
+      id: get-before-version
+      shell: bash
+      env:
+        POMPATH: ${{ inputs.pom-path }}
+      run: echo "::set-output name=before-version::$(${{github.action_path}}/get-version.sh)"
+      
     - name: Bump Version
       env:
         TOKEN: ${{ inputs.github-token }}
         EMAIL: ${{ inputs.git-email }}
         NAME: ${{ inputs.git-username }}
         POMPATH: ${{ inputs.pom-path }}
+        AUTO: ${{ inputs.auto-version-bump }}
+        AUTO_SPLITTER: ${{ inputs.auto-version-bump-splitter }}
+        AUTO_SUFFIX: ${{ inputs.auto-version-bump-suffix }}
+        AUTO_HIGHER: ${{ inputs.auto-version-bump-higher }}
+        AUTO_RELEASE: ${{ inputs.auto-version-bump-release }}
       run: ${{github.action_path}}/version-bump.sh
       shell: bash
+      
     - name: Set outputs
       id: get-outputs
       shell: bash
       env:
         POMPATH: ${{ inputs.pom-path }}
-      run: echo "::set-output name=version::$(${{github.action_path}}/get-version.sh)"
+        BEFORE_VERSION: ${{ steps.get-outputs.outputs.version }}
+      run: |
+        echo "::set-output name=version::$(${{github.action_path}}/get-version.sh)"
+        echo "::set-output name=bumped::$(${{github.action_path}}/bumped.sh)"
+           
     - name: Result
       shell: bash
-      run: "echo 'Version is now ${{ steps.get-outputs.outputs.version }}'"
+      run: "echo 'Version is now ${{ steps.get-outputs.outputs.version }} (Bumped: ${{ steps.get-outputs.outputs.bumped }})'"
 
