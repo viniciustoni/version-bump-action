@@ -37,8 +37,10 @@ function bump {
         local higher=( ${parts[2]//${AUTO_SPLITTER}${AUTO_SUFFIX}/ } )
         local bv=$((higher[1] + 0))
         NEW_VERSION="${parts[0]}.${parts[1]}.$((parts[2] + 0))${AUTO_SPLITTER}${AUTO_SUFFIX}${bv}"
-      else
-        NEW_VERSION="${parts[0]}.${parts[1]}.$((parts[2] + 0))${AUTO_SPLITTER}${AUTO_SUFFIX}"
+      elif [ "${AUTO_HIGHER}" == "true" ]; then
+        NEW_VERSION="${parts[0]}.${parts[1]}.$((parts[2] + 0))${AUTO_SPLITTER}${AUTO_SUFFIX}0"
+	  else 
+		NEW_VERSION="${parts[0]}.${parts[1]}.$((parts[2] + 0))${AUTO_SPLITTER}${AUTO_SUFFIX}"
       fi
       ;;
     esac
