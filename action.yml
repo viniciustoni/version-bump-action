@@ -62,7 +62,6 @@ outputs:
 
 runs:
   using: "composite"
-  if: "!contains(github.event.head_commit.message, ${{ inputs.commit-skip }})"
   steps:
     - name: Output before version
       id: get-before-version
@@ -72,6 +71,7 @@ runs:
       run: echo "::set-output name=before-version::$(${{github.action_path}}/get-version.sh)"
       
     - name: Bump Version
+      if: "!contains(github.event.head_commit.message, ${{ inputs.commit-skip }})"
       env:
         TOKEN: ${{ inputs.github-token }}
         EMAIL: ${{ inputs.git-email }}
