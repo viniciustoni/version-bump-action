@@ -74,6 +74,7 @@ else
   git commit -m "Bump pom.xml from $OLD_VERSION to $NEW_VERSION"
   if [[ "${BUMP_MODE}" == "auto" ]] && [[ "${AUTO_RELEASE}" == "false" ]]; then
 	echo "Doing no new tag for this bump because its disabled for auto mode"
+	git push $REPO
   else
     git tag $NEW_VERSION
     git push $REPO --follow-tags
