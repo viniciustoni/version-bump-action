@@ -71,7 +71,8 @@ runs:
       run: echo "::set-output name=before-version::$(${{github.action_path}}/get-version.sh)"
       
     - name: Bump Version
-      if: "!contains(github.event.head_commit.message, '[SKIP BUMP]')"
+      ## GitHub also added types such as [ci skip] which can be used!  
+      ## fails - if: "!contains(github.event.head_commit.message, '${{ inputs.commit-skip }}')"
       env:
         TOKEN: ${{ inputs.github-token }}
         EMAIL: ${{ inputs.git-email }}
