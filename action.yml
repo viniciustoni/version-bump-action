@@ -68,7 +68,7 @@ runs:
       shell: bash
       env:
         POMPATH: ${{ inputs.pom-path }}
-      run: echo "::set-output name=before-version::$(${{github.action_path}}/get-version.sh)"
+      run: echo "::set-output name=before-version::$(${{github.action_path}}/src/get-version.sh)"
       
     - name: Bump Version
       ## GitHub also added types such as [ci skip] which can be used!  
@@ -83,7 +83,7 @@ runs:
         AUTO_SUFFIX: ${{ inputs.auto-version-bump-suffix }}
         AUTO_HIGHER: ${{ inputs.auto-version-bump-higher }}
         AUTO_RELEASE: ${{ inputs.auto-version-bump-release }}
-      run: ${{github.action_path}}/version-bump.sh
+      run: ${{github.action_path}}/src/version-bump.sh
       shell: bash
       
     - name: Set outputs
@@ -93,8 +93,8 @@ runs:
         POMPATH: ${{ inputs.pom-path }}
         BEFORE_VERSION: ${{ steps.get-outputs.outputs.version }}
       run: |
-        echo "::set-output name=version::$(${{github.action_path}}/get-version.sh)"
-        echo "::set-output name=bumped::$(${{github.action_path}}/bumped.sh)"
+        echo "::set-output name=version::$(${{github.action_path}}/src/get-version.sh)"
+        echo "::set-output name=bumped::$(${{github.action_path}}/src/bumped.sh)"
            
     - name: Result
       shell: bash

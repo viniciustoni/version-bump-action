@@ -1,5 +1,10 @@
 # Changelog
 
+## v5 - 09/19/2022
+
+- Use `mvn` to detect project version instead of `grep`
+- Updated src structure
+
 ## v4 - 06/16/2021
 - Added skip to this action, insert [SKIP BUMP] on commit head (Changeable input commit-skip)
 - Added value to check if version got bumped (output `bumped`)
