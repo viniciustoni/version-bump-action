@@ -38,7 +38,7 @@ jobs:
 
 * `github-token`: The only required argument. Can either be the default token, as seen above, or a personal access token with write access to the repository
 * `git-email`: The email address each commit should be associated with. Defaults to a github provided noreply address
-* `git-username`: The GitHub username each commit should be associated with. Defaults to `github-actions[bot]`
+* `git-username`: The GitHub username each commit should be associated with. Defaults to `version-bump[github-action]`
 * `pom-path`: The path within your directory the pom.xml you intended to change is located.
 
 ## Outputs

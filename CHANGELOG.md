@@ -4,6 +4,7 @@
 
 - Use `mvn` to detect project version instead of `grep`
 - Updated src structure
+- Fixed Bumped value is empty
 
 ## v4 - 06/16/2021
 - Added skip to this action, insert [SKIP BUMP] on commit head (Changeable input commit-skip)

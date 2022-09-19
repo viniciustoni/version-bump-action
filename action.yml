@@ -19,11 +19,11 @@ inputs:
   git-email:
     description: 'The email address used to create the version bump commit with.'
     required: true
-    default: 41898282+github-actions[bot]@users.noreply.github.com
+    default: 41898282+version-bump[github-action]@users.noreply.github.com
   git-username:
     description: 'The name to use for the version bump commit. e.g. github.actor'
     required: true
-    default: github-actions[bot]
+    default: version-bump[github-action]
   commit-skip:
     description: 'Skip this whole action when some phrase is on the commit'
     required: true
@@ -69,9 +69,9 @@ runs:
       env:
         POMPATH: ${{ inputs.pom-path }}
       run: echo "::set-output name=before-version::$(${{github.action_path}}/src/get-version.sh)"
-      
+
     - name: Bump Version
-      ## GitHub also added types such as [ci skip] which can be used!  
+      ## GitHub also added types such as [ci skip] which can be used!
       ## fails - if: "!contains(github.event.head_commit.message, '${{ inputs.commit-skip }}')"
       env:
         TOKEN: ${{ inputs.github-token }}
@@ -85,7 +85,7 @@ runs:
         AUTO_RELEASE: ${{ inputs.auto-version-bump-release }}
       run: ${{github.action_path}}/src/version-bump.sh
       shell: bash
-      
+
     - name: Set outputs
       id: get-outputs
       shell: bash
@@ -95,7 +95,7 @@ runs:
       run: |
         echo "::set-output name=version::$(${{github.action_path}}/src/get-version.sh)"
         echo "::set-output name=bumped::$(${{github.action_path}}/src/bumped.sh)"
-           
+
     - name: Result
       shell: bash
       run: "echo 'Version is now ${{ steps.get-outputs.outputs.version }} (Bumped: ${{ steps.get-outputs.outputs.bumped }})'"
