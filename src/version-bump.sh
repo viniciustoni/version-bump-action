@@ -46,8 +46,17 @@ function bump {
     esac
 }
 
-git config --global user.email $EMAIL
-git config --global user.name $NAME
+#
+# Usage for defined name and mail
+# git config --global user.email $EMAIL
+# git config --global user.name $NAME
+#
+# Usage for last commit
+# git config --global user.name "${GITHUB_ACTOR}"
+# git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+git config user.name "${GITHUB_ACTOR}"
+git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
 
 OLD_VERSION=$($DIR/get-version.sh)
 
