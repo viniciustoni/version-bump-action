@@ -1,4 +1,4 @@
-# Maven Version Bump Action
+# Version Bump Action
 
 A simple GitHub Actions to bump the version of Gradle & Maven projects.
 
