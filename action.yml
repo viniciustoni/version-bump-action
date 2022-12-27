@@ -1,8 +1,8 @@
 # ref: https://help.github.com/en/actions/building-actions/metadata-syntax-for-github-actions
-name: Maven Version Bump Action
-description: A simple GitHub Actions to bump the version of Maven projects
+name: Version Bump Action
+description: A simple GitHub Actions to bump the version of Gradle & Maven projects
 
-author: Plugily Projects and Nick Nichols
+author: Plugily Projects, fzacek, Nick Nichols
 
 branding:
   color: purple
@@ -12,8 +12,16 @@ inputs:
   github-token:
     description: 'A GitHub auth token to be able to create the pull request'
     required: true
+  repo-build:
+    description: 'Should it use MAVEN or GRADLE'
+    required: true
+    default: 'MAVEN'
   pom-path:
     description: 'The relative location of your pom.xml file'
+    required: true
+    default: '.'
+  gradle-path:
+    description: 'The relative location of your build.gradle file'
     required: true
     default: '.'
   git-email:
@@ -77,7 +85,9 @@ runs:
         TOKEN: ${{ inputs.github-token }}
         EMAIL: ${{ inputs.git-email }}
         NAME: ${{ inputs.git-username }}
+        REPO_BUILD: ${{ inputs.repo-build }}
         POMPATH: ${{ inputs.pom-path }}
+        GRADLEPATH: ${{ inputs.gradle-path }}
         AUTO: ${{ inputs.auto-version-bump }}
         AUTO_SPLITTER: ${{ inputs.auto-version-bump-splitter }}
         AUTO_SUFFIX: ${{ inputs.auto-version-bump-suffix }}
@@ -90,7 +100,9 @@ runs:
       id: get-outputs
       shell: bash
       env:
+        REPO_BUILD: ${{ inputs.repo-build }}
         POMPATH: ${{ inputs.pom-path }}
+        GRADLEPATH: ${{ inputs.gradle-path }}
         BEFORE_VERSION: ${{ steps.get-outputs.outputs.version }}
       run: |
         echo "::set-output name=version::$(${{github.action_path}}/src/get-version.sh)"
