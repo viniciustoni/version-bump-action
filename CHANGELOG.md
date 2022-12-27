@@ -1,5 +1,10 @@
 # Changelog
 
+## v6 - 12/27/2022
+
+- Support Gradle
+- Updated ReadMe
+
 ## v5 - 09/19/2022
 
 - Use `mvn` to detect project version instead of `grep`
