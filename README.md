@@ -64,3 +64,11 @@ jobs:
 ## Outputs
 
 * `version` - The after-bump version. Will return the old version if bump was not necessary.
+
+## Licensing
+
+Copyright © [Plugily Projects](https://plugily.xyz)
+
+Copyright © 2021-2022 [Nick Nichols](https://nnichols.github.io/)
+
+Distributed under the [MIT License](https://github.com/nnichols/maven-version-bump-action/blob/master/LICENSE)
