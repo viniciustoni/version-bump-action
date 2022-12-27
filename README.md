@@ -39,7 +39,7 @@ jobs:
 
     - name: Bump Version
       id: bump
-      uses: Plugily-Projects/version-bump-action@v1
+      uses: Plugily-Projects/version-bump-action@v6
       with:
         github-token: ${{ secrets.github_token }}
 
