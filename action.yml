@@ -39,7 +39,7 @@ inputs:
   auto-version-bump:
     description: 'Should we bump the version on every commit?'
     required: true
-    default: true
+    default: false
   auto-version-bump-splitter:
     description: 'Version splitter for auto bump'
     required: true
@@ -47,7 +47,7 @@ inputs:
   auto-version-bump-suffix:
     description: 'Version suffix for auto bump'
     required: true
-    default: 'dev'
+    default: 'SNAPSHOT'
   auto-version-bump-higher:
     description: 'Should after the suffix a number bumped?'
     required: true
@@ -76,7 +76,7 @@ runs:
       shell: bash
       env:
         POMPATH: ${{ inputs.pom-path }}
-      run: echo "::set-output name=before-version::$(${{github.action_path}}/src/get-version.sh)"
+      run: echo "before-version=$(${{github.action_path}}/src/get-version.sh)" >> $GITHUB_OUTPUT
 
     - name: Bump Version
       ## GitHub also added types such as [ci skip] which can be used!
@@ -105,8 +105,8 @@ runs:
         GRADLEPATH: ${{ inputs.gradle-path }}
         BEFORE_VERSION: ${{ steps.get-outputs.outputs.version }}
       run: |
-        echo "::set-output name=version::$(${{github.action_path}}/src/get-version.sh)"
-        echo "::set-output name=bumped::$(${{github.action_path}}/src/bumped.sh)"
+        echo "version=$(${{github.action_path}}/src/get-version.sh)" >> $GITHUB_OUTPUT
+        echo "bumped=$(${{github.action_path}}/src/bumped.sh)" >> $GITHUB_OUTPUT
 
     - name: Result
       shell: bash

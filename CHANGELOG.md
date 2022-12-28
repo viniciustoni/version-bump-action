@@ -1,5 +1,9 @@
 # Changelog
 
+## v7 - 12/28/2022
+
+- Deprecating save-state and set-output commands
+
 ## v6 - 12/27/2022
 
 - Support Gradle
