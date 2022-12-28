@@ -12,7 +12,7 @@ jobs:
 
       - name: Bump Version
         id: bump
-        uses: Plugily-Projects/maven-version-bump-action@dev
+        uses: Plugily-Projects/maven-version-bump-action@v7
         with:
           github-token: ${{ secrets.github_token }}
           repo-build: MAVEN
