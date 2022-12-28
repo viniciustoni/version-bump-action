@@ -1,5 +1,5 @@
 # ref: https://help.github.com/en/actions/building-actions/metadata-syntax-for-github-actions
-name: Version Bump Action
+name: Gradle & Maven Version Bump
 description: A simple GitHub Actions to bump the version of Gradle & Maven projects
 
 author: Plugily Projects, fzacek, Nick Nichols
