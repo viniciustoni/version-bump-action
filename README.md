@@ -1,21 +1,24 @@
-# Version Bump Action
+# Version Bump Github Action
 
-A simple GitHub Actions to bump the version of Gradle & Maven projects.
+A simple GitHub Actions to bump the version of Gradle & Maven projects with extended functionality for automatic versioning.
 
-When triggered, this action will look at the commit message of HEAD~1 and determine if it contains one of `#major`, `#minor`, or `#patch` (in that order of precedence).
-If true, it will use Maven/sed to bump your pom's version/Gradle build's by the X.x.x major, x.X.x minor or x.x.X patch version respectively.
-Furthermore, you can define auto commit features such as increase version number on every commit. (e.g. project-1.0.0-SNAPSHOT-INCREASE -> project-1.0.0-SNAPSHOT150)
-(Used gradle fork https://github.com/fzacek/gradle-version-bump-action from @fzacek to implement gradle also into this multi use version bump action for any gradle and maven project)
-
+When triggered, this action will look at the commit message of HEAD~1 and determine if it contains one
+of `#major`, `#minor`, or `#patch` (in that order of precedence).
+If true, it will use Maven/sed to bump your pom's version/Gradle build's by the X.x.x major, x.X.x minor or x.x.X patch
+version respectively.
+Furthermore, you can define auto commit features such as increase version number on every commit. (e.g.
+project-1.0.0-SNAPSHOT-INCREASE -> project-1.0.0-SNAPSHOT150)
+(Used gradle fork https://github.com/fzacek/gradle-version-bump-action from @fzacek to implement gradle also into this
+multi use version bump action for any gradle and maven project)
 
 For example, a `#minor` update to version `1.3.9` will result in the version changing to `1.4.0`.
-The change will then be committed. Plugily Projects is using it on their projects, to see demo, just watch the repos of them. 
+The change will then be committed. Plugily Projects is using it on their projects, to see demo, just watch the repos of
+them. You can view examples on the examples dir in this repo, too. 
 
 ## Sample Usage
-
+See examples dir for more specific examples which also shows you how to implement it into the publishing part to e.g. maven repo. 
 ```yaml
-name: Clojure Version Bump
-
+name: Version Bump
 on:
     push:
         branches: [ development ]
@@ -27,31 +30,32 @@ on:
                 default: 'false'
             tags:
                 description: 'Tags'
-                
 jobs:
-  build:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout Latest Commit
+                uses: actions/checkout@v2
 
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Latest Commit
-      uses: actions/checkout@v2
-
-    - name: Bump Version
-      id: bump
-      uses: Plugily-Projects/version-bump-action@v6
-      with:
-        github-token: ${{ secrets.github_token }}
-
-    - name: Print Version
-      run: "echo 'New Version: ${{steps.bump.outputs.version}}'"
+            -   name: Bump Version
+                id: bump
+                uses: Plugily-Projects/version-bump-action@v6
+                with:
+                    github-token: ${{ secrets.github_token }}
+                    git-committer: 'BOT'
+                    repo-build: GRADLE
+                    auto-version-bump: true
+            -   name: Print Version
+                run: "echo 'New Version: ${{steps.bump.outputs.version}}'"
 ```
 
 ## Supported Arguments
 
-* `github-token`: The only required argument. Can either be the default token, as seen above, or a personal access token with write access to the repository
+* `github-token`: The only required argument. Can either be the default token, as seen above, or a personal access token
+  with write access to the repository
 * `git-email`: The email address each commit should be associated with. Defaults to a github provided noreply address
 * `git-username`: The GitHub username each commit should be associated with. Defaults to `version-bump[github-action]`
+* `git-committer`: Who should be the committer? defined git [BOT] or last committer [USER]
 * `pom-path`: The path within your directory the pom.xml you intended to change is located.
 * `gradle-path`: The path within your directory the build.gradle you intended to change is located.
 * `repo-build`: Using MAVEN or GRADLE to bump version

@@ -32,6 +32,10 @@ inputs:
     description: 'The name to use for the version bump commit. e.g. github.actor'
     required: true
     default: version-bump[github-action]
+  git-committer:
+    description: 'Who should be the committer? defined git [BOT] or last committer [USER]'
+    required: true
+    default: 'BOT'
   commit-skip:
     description: 'Skip this whole action when some phrase is on the commit'
     required: true
@@ -85,6 +89,7 @@ runs:
         TOKEN: ${{ inputs.github-token }}
         EMAIL: ${{ inputs.git-email }}
         NAME: ${{ inputs.git-username }}
+        COMMITTER: ${{ inputs.git-committer }}
         REPO_BUILD: ${{ inputs.repo-build }}
         POMPATH: ${{ inputs.pom-path }}
         GRADLEPATH: ${{ inputs.gradle-path }}

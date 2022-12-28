@@ -3,6 +3,7 @@
 ## v7 - 12/28/2022
 
 - Deprecating save-state and set-output commands
+- Added env COMMITTER to set committer type easily
 
 ## v6 - 12/27/2022
 

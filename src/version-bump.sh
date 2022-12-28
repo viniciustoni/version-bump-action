@@ -46,16 +46,15 @@ function bump {
     esac
 }
 
-#
-# Usage for defined name and mail
-# git config --global user.email $EMAIL
-# git config --global user.name $NAME
-#
-# Usage for last commit
-# git config --global user.name "${GITHUB_ACTOR}"
-# git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-git config user.name "${GITHUB_ACTOR}"
-git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+if [ "${COMMITTER}" = "BOT" ]; then
+    # Usage for defined name and mail
+    git config --global user.email $EMAIL
+    git config --global user.name $NAME
+else
+    # Usage for last commit
+    git config user.name "${GITHUB_ACTOR}"
+    git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+fi
 
 OLD_VERSION=$($DIR/get-version.sh)
 
