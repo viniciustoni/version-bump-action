@@ -12,10 +12,9 @@ jobs:
 
       - name: Bump Version
         id: bump
-        uses: Plugily-Projects/maven-version-bump-action@v7
+        uses: Plugily-Projects/maven-version-bump-action@v8
         with:
           github-token: ${{ secrets.github_token }}
-          repo-build: MAVEN
           auto-version-bump: true
           git-committer: 'BOT'
       - uses: actions/cache@v2

@@ -43,7 +43,6 @@ jobs:
                 with:
                     github-token: ${{ secrets.github_token }}
                     git-committer: 'BOT'
-                    repo-build: GRADLE
                     auto-version-bump: true
             -   name: Print Version
                 run: "echo 'New Version: ${{steps.bump.outputs.version}}'"
@@ -56,9 +55,6 @@ jobs:
 * `git-email`: The email address each commit should be associated with. Defaults to a github provided noreply address
 * `git-username`: The GitHub username each commit should be associated with. Defaults to `version-bump[github-action]`
 * `git-committer`: Who should be the committer? defined git [BOT] or last committer [USER]
-* `pom-path`: The path within your directory the pom.xml you intended to change is located.
-* `gradle-path`: The path within your directory the build.gradle you intended to change is located.
-* `repo-build`: Using MAVEN or GRADLE to bump version
 * `auto-version-bump`: Should we bump the version on every commit?
 * `auto-version-bump-splitter`: Version splitter for auto bump
 * `auto-version-bump-suffix`: Version suffix for auto bump

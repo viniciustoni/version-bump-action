@@ -12,18 +12,6 @@ inputs:
   github-token:
     description: 'A GitHub auth token to be able to create the pull request'
     required: true
-  repo-build:
-    description: 'Should it use MAVEN or GRADLE'
-    required: true
-    default: 'MAVEN'
-  pom-path:
-    description: 'The relative location of your pom.xml file'
-    required: true
-    default: '.'
-  gradle-path:
-    description: 'The relative location of your build.gradle file'
-    required: true
-    default: '.'
   git-email:
     description: 'The email address used to create the version bump commit with.'
     required: true
@@ -78,8 +66,6 @@ runs:
     - name: Output before version
       id: get-before-version
       shell: bash
-      env:
-        POMPATH: ${{ inputs.pom-path }}
       run: echo "before-version=$(${{github.action_path}}/src/get-version.sh)" >> $GITHUB_OUTPUT
 
     - name: Bump Version
@@ -90,9 +76,6 @@ runs:
         EMAIL: ${{ inputs.git-email }}
         NAME: ${{ inputs.git-username }}
         COMMITTER: ${{ inputs.git-committer }}
-        REPO_BUILD: ${{ inputs.repo-build }}
-        POMPATH: ${{ inputs.pom-path }}
-        GRADLEPATH: ${{ inputs.gradle-path }}
         AUTO: ${{ inputs.auto-version-bump }}
         AUTO_SPLITTER: ${{ inputs.auto-version-bump-splitter }}
         AUTO_SUFFIX: ${{ inputs.auto-version-bump-suffix }}
@@ -105,9 +88,6 @@ runs:
       id: get-outputs
       shell: bash
       env:
-        REPO_BUILD: ${{ inputs.repo-build }}
-        POMPATH: ${{ inputs.pom-path }}
-        GRADLEPATH: ${{ inputs.gradle-path }}
         BEFORE_VERSION: ${{ steps.get-outputs.outputs.version }}
       run: |
         echo "version=$(${{github.action_path}}/src/get-version.sh)" >> $GITHUB_OUTPUT

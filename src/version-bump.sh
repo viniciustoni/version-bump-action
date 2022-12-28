@@ -70,43 +70,35 @@ elif [[ "${AUTO}" == "true" ]]; then
     BUMP_MODE="auto"
 fi
 
-if [ "${REPO_BUILD}" = "GRADLE" ]; then
-    BUILD_FILE=$GRADLEPATH/build.gradle
-    TYPE=GROOVY
-    if [ ! -f "$BUILD_FILE" ]; then
-        BUILD_FILE=$GRADLEPATH/build.gradle.kts
-        TYPE=KOTLIN
+if [ -f ./pom.xml ]; then
+    REPO_SYSTEM=MAVEN
+    BUILD_FILE=./pom.xml
+else
+    REPO_SYSTEM=GRADLE
+    if [ -f gradle.properties ] && grep -E -q "version=${CURRENT_VERSION}" gradle.properties; then
+        BUILD_FILE=./gradle.properties
+    elif [ -f ./build.gradle ]; then
+        BUILD_FILE=./build.gradle
+    elif [ -f ./build.gradle.kts ]; then
+        BUILD_FILE=./build.gradle.kts
     fi
 fi
 
 if [[ "${BUMP_MODE}" == "none" ]]; then
-    echo "No matching commit tags found."
-    if [ "${REPO_BUILD}" = "MAVEN" ]; then
-        echo "pom.xml at" $POMPATH "will remain at" $OLD_VERSION
-    else
-        echo "build.gradle at" $GRADLEPATH "will remain at" $OLD_VERSION
-    fi
-
+    echo "No matching commit tags found.
+    Version will remain at" $OLD_VERSION
 else
     echo $BUMP_MODE "version bump detected"
     bump $BUMP_MODE $OLD_VERSION
+    echo "version will be bumped from" $OLD_VERSION "to" $NEW_VERSION
     REPO="https://$GITHUB_ACTOR:$TOKEN@github.com/$GITHUB_REPOSITORY.git"
-    if [ "${REPO_BUILD}" = "MAVEN" ]; then
-        echo "pom.xml at" $POMPATH "will be bumped from" $OLD_VERSION "to" $NEW_VERSION
+    if [ "${REPO_SYSTEM}" = "MAVEN" ]; then
         mvn -q versions:set -DnewVersion="${NEW_VERSION}"
-        git add $POMPATH/pom.xml
-        git commit -m "Bump pom.xml from $OLD_VERSION to $NEW_VERSION"
-    else
-        echo "build.gradle at " $GRADLEPATH " will be bumped from" $OLD_VERSION "to" $NEW_VERSION
-        if [ "${TYPE}" == "GROOVY" ]; then
-            sed -i "s/$OLD_VERSION/$NEW_VERSION/" $BUILD_FILE
-        elif [ "${TYPE}" == "KOTLIN" ]; then
-            sed -i "s/version = \"$OLD_VERSION\"/version = \"$NEW_VERSION\"/" $BUILD_FILE
-        fi
-        git add $BUILD_FILE
-        git commit -m "Bump build.gradle from $OLD_VERSION to $NEW_VERSION"
+    elif [ "${REPO_SYSTEM}" = "GRADLE" ]; then
+        sed -i "s/\(version *= *['\"]*\)${OLD_VERSION}\(['\"]*\)/\1${NEW_VERSION}\2/" ${BUILD_FILE}
     fi
-
+    git add $BUILD_FILE
+    git commit -m "Bump version from $OLD_VERSION to $NEW_VERSION"
     if [[ "${BUMP_MODE}" == "auto" ]] && [[ "${AUTO_RELEASE}" == "false" ]]; then
         echo "Doing no new tag for this bump because its disabled for auto mode"
         git push $REPO
