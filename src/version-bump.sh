@@ -72,7 +72,7 @@ fi
 
 if [ -f ./pom.xml ]; then
     REPO_SYSTEM=MAVEN
-    BUILD_FILE=./pom.xml
+    BUILD_FILE=`find . -name 'pom.xml'`
 else
     REPO_SYSTEM=GRADLE
     if [ -f gradle.properties ] && grep -E -q "version=${CURRENT_VERSION}" gradle.properties; then
